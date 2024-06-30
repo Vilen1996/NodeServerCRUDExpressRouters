@@ -1,0 +1,42 @@
+[
+  {
+    "id": 101,
+    "title": "Homepage Design",
+    "description": "Create a new design for the homepage that aligns with the new branding guidelines.",
+    "status": "Completed",
+    "assignee": "Alice Johnson",
+    "dueDate": "2024-08-01"
+  },
+  {
+    "id": 102,
+    "title": "Login Optimization",
+    "description": "Improve the performance and loading time of the login page.",
+    "status": "In Progress",
+    "assignee": "Bob Smith",
+    "dueDate": "2024-07-15"
+  },
+  {
+    "id": 104,
+    "title": "Mobile App Bug Fixes",
+    "description": "Fix the critical bugs reported in the latest version of the mobile app.",
+    "status": "In Progress",
+    "assignee": "Diana Prince",
+    "dueDate": "2024-07-20"
+  },
+  {
+    "id": 105,
+    "title": "Marketing Campaign Launch",
+    "description": "Plan and execute the marketing campaign for the new product launch.",
+    "status": "Completed",
+    "assignee": "Eve Adams",
+    "dueDate": "2024-06-30"
+  },
+  {
+    "id": 106,
+    "title": "Customer Feedback Analysis",
+    "description": "Analyze the feedback received from customers and propose improvements.",
+    "status": "Not Started",
+    "assignee": "Frank Martin",
+    "dueDate": "2024-08-10"
+  }
+]

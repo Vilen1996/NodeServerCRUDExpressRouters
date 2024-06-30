@@ -1,0 +1,32 @@
+[
+  {
+    "id": 120,
+    "fullName": "James Born",
+    "email": "james@exmaple.com"
+  },
+  {
+    "id": 121,
+    "fullName": "JJJ Smith",
+    "email": "jane@example.com"
+  },
+  {
+    "id": 122,
+    "fullName": "Robert Brown",
+    "email": "robert@example.com"
+  },
+  {
+    "id": 123,
+    "fullName": "Emily Davis",
+    "email": "emily@example.com"
+  },
+  {
+    "id": 124,
+    "fullName": "Michael Johnson",
+    "email": "michael@example.com"
+  },
+  {
+    "id": 125,
+    "fullName": "Sarah Wilson",
+    "email": "sarah@example.com"
+  }
+]
