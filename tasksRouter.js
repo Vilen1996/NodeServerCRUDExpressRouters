@@ -33,21 +33,40 @@ tasksRouter.post("/", (req, res) => {
 });
 
 tasksRouter.get("/", (req, res) => {
-  fs.readFile("tasks.json", "utf-8", (err, data) => {
+  fs.readFile("projects.json", "utf-8", (err, data) => {
     if (err) {
       console.error("File does not exist");
       return res.status(500).send("Internal server error");
     }
-    let tasks = [];
+    let projects = [];
     try {
-      tasks = JSON.parse(data);
+      projects = JSON.parse(data);
     } catch (parseError) {
       console.error("Error parsing JSON data");
       if (data.trim() !== "") {
         return res.status(500).send("Internal server error");
       }
     }
-    res.status(200).send(tasks);
+
+    fs.readFile("tasks.json", "utf-8", (err, data) => {
+      if (err) {
+        console.error("File does not exist");
+        return res.status(500).send("Internal server error");
+      }
+      let tasks = [];
+      try {
+        tasks = JSON.parse(data);
+      } catch (parseError) {
+        console.error("Error parsing JSON data");
+        if (data.trim() !== "") {
+          return res.status(500).send("Internal server error");
+        }
+      }
+      const filteredTasks = tasks.filter((u) =>
+        projects[0].tasks.includes(u.id)
+      );
+      res.status(200).send(filteredTasks);
+    });
   });
 });
 
