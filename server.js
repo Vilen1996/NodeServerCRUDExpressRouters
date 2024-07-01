@@ -9,8 +9,8 @@ const port = 3001;
 
 app.use(bodyParser.json());
 
-app.use("/users", usersRouter);
-app.use("/tasks", tasksRouter);
+app.use("/projects/tasks/users", usersRouter);
+app.use("/projects/tasks", tasksRouter);
 app.use("/projects", projectsRouter);
 
 app.listen(port, () => {
