@@ -2,7 +2,7 @@ const express = require("express");
 const tasksRouter = express.Router();
 const fs = require("fs");
 
-tasksRouter.post("/", (req, res) => {
+tasksRouter.post("/:projectId/tasks", (req, res) => {
   let newTask = req.body;
 
   fs.readFile("tasks.json", "utf-8", (err, data) => {
