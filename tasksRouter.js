@@ -32,129 +32,239 @@ tasksRouter.post("/", (req, res) => {
   });
 });
 
-tasksRouter.get("/", (req, res) => {
+tasksRouter.get("/:projectId/tasks", (req, res) => {
+  const projectId = parseInt(req.params.projectId);
   fs.readFile("projects.json", "utf-8", (err, data) => {
     if (err) {
-      console.error("File does not exist");
+      console.error("Error reading projects file");
       return res.status(500).send("Internal server error");
     }
+
     let projects = [];
     try {
       projects = JSON.parse(data);
     } catch (parseError) {
-      console.error("Error parsing JSON data");
+      console.error("Error parsing projects JSON data");
       if (data.trim() !== "") {
         return res.status(500).send("Internal server error");
       }
     }
 
+    const project = projects.find((proj) => proj.id === projectId);
+    if (!project) {
+      return res.status(404).send({ message: "Project not found" });
+    }
+
     fs.readFile("tasks.json", "utf-8", (err, data) => {
       if (err) {
-        console.error("File does not exist");
+        console.error("Error reading tasks file");
         return res.status(500).send("Internal server error");
       }
+
       let tasks = [];
       try {
         tasks = JSON.parse(data);
       } catch (parseError) {
-        console.error("Error parsing JSON data");
+        console.error("Error parsing tasks JSON data");
         if (data.trim() !== "") {
           return res.status(500).send("Internal server error");
         }
       }
-      const filteredTasks = tasks.filter((u) =>
-        projects[0].tasks.includes(u.id)
+
+      const filteredTasks = tasks.filter((task) =>
+        project.tasks.includes(task.id)
       );
       res.status(200).send(filteredTasks);
     });
   });
 });
 
-tasksRouter.get("/:taskId", (req, res) => {
-  const taskId = req.params.taskId;
-  fs.readFile("tasks.json", "utf-8", (err, data) => {
+tasksRouter.get("/:projectId/tasks/:taskId", (req, res) => {
+  const projectId = parseInt(req.params.projectId);
+  const taskId = parseInt(req.params.taskId);
+
+  fs.readFile("projects.json", "utf-8", (err, data) => {
     if (err) {
-      console.error("File does not exist");
+      console.error("Error reading projects file");
       return res.status(500).send("Internal server error");
     }
-    let tasks = [];
+
+    let projects = [];
     try {
-      tasks = JSON.parse(data);
+      projects = JSON.parse(data);
     } catch (parseError) {
-      console.error("Error parsing JSON data");
+      console.error("Error parsing projects JSON data");
       if (data.trim() !== "") {
         return res.status(500).send("Internal server error");
       }
     }
-    let foundedTask = tasks.find((u) => u.id == taskId);
-    res.status(200).send(foundedTask);
-  });
-});
 
-tasksRouter.delete("/:taskId", (req, res) => {
-  const taskId = req.params.taskId;
-  fs.readFile("tasks.json", "utf-8", (err, data) => {
-    if (err) {
-      console.error("File does not exist");
-      return res.status(500).send("Internal server error");
+    const project = projects.find((proj) => proj.id === projectId);
+    if (!project) {
+      return res.status(404).send({ message: "Project not found" });
     }
 
-    let tasks = [];
-    try {
-      tasks = JSON.parse(data);
-    } catch (parseError) {
-      console.error("Error parsing JSON data");
-      if (data.trim() !== "") {
+    fs.readFile("tasks.json", "utf-8", (err, data) => {
+      if (err) {
+        console.error("Error reading tasks file");
         return res.status(500).send("Internal server error");
       }
-    }
-    const filteredTasks = tasks.filter((u) => u.id != taskId);
 
-    fs.writeFile(
-      "tasks.json",
-      JSON.stringify(filteredTasks, null, 2),
-      (writeErr) => {
-        if (writeErr) {
-          console.error("Cannot add task");
+      let tasks = [];
+      try {
+        tasks = JSON.parse(data);
+      } catch (parseError) {
+        console.error("Error parsing tasks JSON data");
+        if (data.trim() !== "") {
           return res.status(500).send("Internal server error");
         }
-        return res.status(201).send({ message: "Task created" });
       }
-    );
+
+      const filteredTasks = tasks.filter((task) =>
+        project.tasks.includes(task.id)
+      );
+      const findedTask = filteredTasks.find((task) => task.id === taskId);
+
+      if (!findedTask) {
+        return res.status(404).send({ message: "Task not found" });
+      }
+
+      res.status(200).send(findedTask);
+    });
   });
 });
 
-tasksRouter.put("/:taskId", (req, res) => {
-  const updateId = req.params.taskId;
-  const updatedTask = req.body;
+tasksRouter.delete("/:projectId/tasks/:taskId", (req, res) => {
+  const projectId = parseInt(req.params.projectId);
+  const taskId = parseInt(req.params.taskId);
 
-  fs.readFile("tasks.json", "utf-8", (err, data) => {
+  fs.readFile("projects.json", "utf-8", (err, data) => {
     if (err) {
-      console.error("File does not exist");
+      console.error("Error reading projects file");
       return res.status(500).send("Internal server error");
     }
-    let tasks = [];
+
+    let projects = [];
     try {
-      tasks = JSON.parse(data);
+      projects = JSON.parse(data);
     } catch (parseError) {
-      console.error("Error parsing JSON data");
+      console.error("Error parsing projects JSON data");
       if (data.trim() !== "") {
         return res.status(500).send("Internal server error");
       }
     }
-    const taskIndex = tasks.findIndex((u) => u.id == updateId);
 
-    if (taskIndex == -1) {
-      return res.status(404).send({ message: "Task not found" });
+    const project = projects.find((proj) => proj.id === projectId);
+    if (!project) {
+      return res.status(404).send({ message: "Project not found" });
     }
 
-    tasks[taskIndex] = { ...tasks[taskIndex], ...updatedTask };
-    fs.writeFile("tasks.json", JSON.stringify(tasks, null, 2), (writeErr) => {
-      if (writeErr) {
-        console.error("Cannot update user");
+    fs.readFile("tasks.json", "utf-8", (err, data) => {
+      if (err) {
+        console.error("Error reading tasks file");
         return res.status(500).send("Internal server error");
       }
-      return res.status(200).send({ message: "Task updated" });
+
+      let tasks = [];
+      try {
+        tasks = JSON.parse(data);
+      } catch (parseError) {
+        console.error("Error parsing tasks JSON data");
+        if (data.trim() !== "") {
+          return res.status(500).send("Internal server error");
+        }
+      }
+
+      const taskIndex = tasks.findIndex((task) => task.id === taskId);
+
+      if (taskIndex === -1 || !project.tasks.includes(taskId)) {
+        return res.status(404).send({ message: "Task not found in project" });
+      }
+
+      tasks.splice(taskIndex, 1);
+      project.tasks = project.tasks.filter((id) => id !== taskId);
+
+      fs.writeFile(
+        "projects.json",
+        JSON.stringify(projects, null, 2),
+        (err) => {
+          if (err) {
+            console.error("Error writing to projects file");
+            return res.status(500).send("Internal server error");
+          }
+
+          fs.writeFile("tasks.json", JSON.stringify(tasks, null, 2), (err) => {
+            if (err) {
+              console.error("Error writing to tasks file");
+              return res.status(500).send("Internal server error");
+            }
+
+            res.status(200).send({ message: "Task deleted successfully" });
+          });
+        }
+      );
+    });
+  });
+});
+
+tasksRouter.put("/:projectId/tasks/:taskId", (req, res) => {
+  const projectId = parseInt(req.params.projectId);
+  const taskId = parseInt(req.params.taskId);
+  const updatedTask = req.body;
+
+  fs.readFile("projects.json", "utf-8", (err, data) => {
+    if (err) {
+      console.error("Error reading projects file");
+      return res.status(500).send("Internal server error");
+    }
+
+    let projects = [];
+    try {
+      projects = JSON.parse(data);
+    } catch (parseError) {
+      console.error("Error parsing projects JSON data");
+      if (data.trim() !== "") {
+        return res.status(500).send("Internal server error");
+      }
+    }
+
+    const project = projects.find((proj) => proj.id === projectId);
+    if (!project) {
+      return res.status(404).send({ message: "Project not found" });
+    }
+
+    fs.readFile("tasks.json", "utf-8", (err, data) => {
+      if (err) {
+        console.error("Error reading tasks file");
+        return res.status(500).send("Internal server error");
+      }
+
+      let tasks = [];
+      try {
+        tasks = JSON.parse(data);
+      } catch (parseError) {
+        console.error("Error parsing tasks JSON data");
+        if (data.trim() !== "") {
+          return res.status(500).send("Internal server error");
+        }
+      }
+
+      const taskIndex = tasks.findIndex((task) => task.id == taskId);
+
+      if (taskIndex === -1 || !project.tasks.includes(taskId)) {
+        return res.status(404).send({ message: "Task not found in project" });
+      }
+
+      tasks[taskIndex] = { ...tasks[taskIndex], ...updatedTask };
+
+      fs.writeFile("tasks.json", JSON.stringify(tasks, null, 2), (err) => {
+        if (err) {
+          console.error("Error writing to tasks file");
+          return res.status(500).send("Internal server error");
+        }
+
+        res.status(200).send({ message: "Task updated successfully" });
+      });
     });
   });
 });

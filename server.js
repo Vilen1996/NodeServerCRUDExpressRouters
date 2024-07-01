@@ -10,7 +10,7 @@ const port = 3001;
 app.use(bodyParser.json());
 
 app.use("/projects/users", usersRouter);
-app.use("/projects/tasks", tasksRouter);
+app.use("/projects", tasksRouter);
 app.use("/projects", projectsRouter);
 
 app.listen(port, () => {

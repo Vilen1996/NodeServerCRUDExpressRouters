@@ -9,6 +9,18 @@
     "budget": 75000,
     "currency": "USD",
     "team": [501, 502, 503],
-    "tasks": [101, 102, 103]
+    "tasks": [102, 103]
+  },
+  {
+    "id": 1002,
+    "name": "Mobile App Development",
+    "description": "Development of a new mobile application to enhance customer engagement and streamline services.",
+    "startDate": "2024-08-01",
+    "endDate": "2025-01-31",
+    "status": "In Progress",
+    "budget": 90000,
+    "currency": "USD",
+    "team": [504, 505, 506],
+    "tasks": [104, 105, 106]
   }
 ]
